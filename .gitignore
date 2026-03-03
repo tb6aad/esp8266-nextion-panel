@@ -1,0 +1,8 @@
+# PlatformIO build çıktıları
+.pio/
+
+# VS Code
+.vscode/
+
+# Kişisel config (WiFi şifresi, HomeKit kodu)
+include/config.h

@@ -1,0 +1,17 @@
+#pragma once
+
+// WiFi
+#define WIFI_SSID      "YOUR_WIFI_SSID"
+#define WIFI_PASSWORD  "YOUR_WIFI_PASSWORD"
+
+// NTP — UTC+3 için 10800
+#define UTC_OFFSET_SEC  (3 * 3600)
+
+// Fabrika sıfırlama butonu (D3 = GPIO0)
+#define PIN_FACTORY  0
+
+// Apple HomeKit eşleştirme kodu (XXX-XX-XXX formatı)
+#define HOMEKIT_PASSWORD  "459-27-836"
+
+// LittleFS storage versiyon
+#define HK_STORAGE_VERSION  1
