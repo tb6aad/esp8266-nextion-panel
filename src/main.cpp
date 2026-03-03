@@ -32,8 +32,13 @@
 #include <SoftwareSerial.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <DHT.h>
 #include <arduino_homekit_server.h>
 #include "config.h"
+
+// ─── DHT11 ───────────────────────────────────────────────────────────────────
+#define DHT_PIN  13   // D7 = GPIO13
+DHT dht(DHT_PIN, DHT11);
 
 // ─── HomeKit Dışa Aktarımları (my_accessory.c) ───────────────────────────────
 extern "C" homekit_server_config_t config;
@@ -394,9 +399,20 @@ void updateTime() {
 }
 
 void updateTemperature() {
-    int temp = random(18, 31);
-    int hum  = random(40, 81);
-    nxSetTxt("t4", String(temp) + "C " + String(hum) + "%");
+    float hum  = dht.readHumidity();
+    float temp = dht.readTemperature();
+
+    if (isnan(hum) || isnan(temp)) {
+        Serial.println("[DHT11] Okuma hatasi!");
+        nxSetTxt("t4", "-- C  -- %");
+        return;
+    }
+
+    temp += DHT_TEMP_OFFSET;
+    hum  += DHT_HUM_OFFSET;
+
+    Serial.printf("[DHT11] Sicaklik: %.1f C  Nem: %.1f %%\n", temp, hum);
+    nxSetTxt("t4", String((int)temp) + "C " + String((int)hum) + "%");
 }
 
 void updateWifiStatus() {
@@ -432,7 +448,7 @@ void updateHomeKitStatus() {
 void setup() {
     Serial.begin(115200);
     nextion.begin(9600);
-    randomSeed(analogRead(A0));
+    dht.begin();
 
     Serial.println("\n[Sistem] Baslatiliyor...");
 
